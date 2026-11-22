@@ -1,3 +1,5 @@
+import { BacklogView } from "./backlog/BacklogView";
+
 export function App() {
   return (
     <main>
@@ -8,6 +10,7 @@ export function App() {
           <li>Arkkitehtuuripäätökset</li>
         </ul>
       </nav>
+      <BacklogView />
     </main>
   );
 }

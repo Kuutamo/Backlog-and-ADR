@@ -1,11 +1,14 @@
-.PHONY: install dev db api web check check-python check-frontend test smoke
+.PHONY: install dev db migrate api web check check-python check-frontend test smoke
 
 install: ## Asenna kaikki riippuvuudet
 	uv sync --all-packages
 	cd frontend && npm install
 
 db: ## Käynnistä PostgreSQL taustalle
-	docker compose up -d db
+	docker compose up -d --wait db
+
+migrate: db ## Aja tietokantamigraatiot
+	uv run alembic -c backend/alembic.ini upgrade head
 
 api: ## Käynnistä backend (http://localhost:8000, dokumentaatio /docs)
 	uv run uvicorn api.main:app --reload
@@ -13,7 +16,7 @@ api: ## Käynnistä backend (http://localhost:8000, dokumentaatio /docs)
 web: ## Käynnistä frontend (http://localhost:5173)
 	cd frontend && npm run dev
 
-dev: db ## Käynnistä tietokanta, backend ja frontend
+dev: migrate ## Käynnistä tietokanta, backend ja frontend
 	$(MAKE) -j2 api web
 
 check: check-python check-frontend ## Aja samat tarkistukset kuin CI

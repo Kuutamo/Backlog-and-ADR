@@ -46,11 +46,12 @@ wait_for() {
 
 echo "1/3 Tietokanta"
 docker compose up -d --wait db
+uv run alembic -c backend/alembic.ini upgrade head
 
 echo "2/3 Backend"
 uv run uvicorn api.main:app --port "$API_PORT" >"$LOG_DIR/api.log" 2>&1 &
 PIDS+=($!)
-wait_for "http://localhost:$API_PORT/health" '"status":"ok"'
+wait_for "http://localhost:$API_PORT/health" '"database":"ok"'
 wait_for "http://localhost:$API_PORT/docs" "swagger"
 
 echo "3/3 Frontend"
@@ -59,4 +60,10 @@ PIDS+=($!)
 wait_for "http://localhost:$WEB_PORT/" "<title>Backlog ja ADR</title>"
 wait_for "http://localhost:$WEB_PORT/api/health" '"status":"ok"'
 
-echo "Savutesti läpi: tietokanta, backend ja frontend käynnistyvät ja vastaavat."
+echo "Tarinan tallennus frontendin kautta tietokantaan"
+curl -fsS -X POST "http://localhost:$WEB_PORT/api/stories" \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Savutestin tarina"}' >/dev/null
+wait_for "http://localhost:$WEB_PORT/api/stories" "Savutestin tarina"
+
+echo "Savutesti läpi: tietokanta, backend ja frontend käynnistyvät, ja tarina tallentuu."
