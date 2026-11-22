@@ -8,6 +8,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
+from api.adr.router import router as adr_router
 from api.backlog.router import router as backlog_router
 from api.db import get_session
 
@@ -17,6 +18,7 @@ app = FastAPI(
     description="Backlog-työkalun ja ADR-rekisterin REST-rajapinta.",
 )
 app.include_router(backlog_router)
+app.include_router(adr_router)
 
 
 class Health(BaseModel):
