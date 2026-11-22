@@ -1,8 +1,8 @@
 .PHONY: install dev db migrate api web check check-python check-frontend test smoke
 
 install: ## Asenna kaikki riippuvuudet
-	uv sync --all-packages
-	cd frontend && npm install
+	uv sync --locked --all-packages
+	cd frontend && npm ci
 
 db: ## Käynnistä PostgreSQL taustalle
 	docker compose up -d --wait db

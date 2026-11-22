@@ -19,7 +19,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Asenna riippuvuudet
-        run: uv sync --all-packages
+        run: uv sync --locked --all-packages
       - name: Ruff (lint)
         run: uv run ruff check .
       - name: Ruff (muotoilu)
@@ -43,7 +43,7 @@ jobs:
         with:
           node-version: "22"
       - name: Asenna riippuvuudet
-        run: npm install
+        run: npm ci
       - name: ESLint
         run: npm run lint
       - name: Prettier
@@ -70,8 +70,8 @@ jobs:
           node-version: "22"
       - name: Asenna riippuvuudet tyhjästä
         run: |
-          uv sync --all-packages
-          cd frontend && npm install
+          uv sync --locked --all-packages
+          cd frontend && npm ci
       - name: Buildaa frontend
         run: npm run build
         working-directory: frontend
