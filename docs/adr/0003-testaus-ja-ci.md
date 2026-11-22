@@ -14,9 +14,9 @@ Osa koodista syntyy Clauden kanssa, joten automaattisten testien ja katselmoinni
 | Backend | pytest, FastAPI:n TestClient, Testcontainers (PostgreSQL), import-linter | ruff, mypy (strict) |
 | Frontend | Vitest, React Testing Library | ESLint, Prettier, TypeScriptin strict-tila |
 | Skriptit | pytest | ruff, mypy (strict) |
-| Koko sovellus | Playwright-päästä-päähän-testit tärkeimmille poluille (sprintistä 2 alkaen) | |
+| Koko sovellus | Savutesti (`scripts/smoke-test.sh`): tietokanta, backend ja frontend käynnistyvät ja vastaavat. Playwright-päästä-päähän-testit tärkeimmille poluille sprintistä 2 alkaen | |
 
-GitHub Actions ajaa Python- ja frontend-jobit rinnakkain jokaisessa PR:ssä, ja päähaara on suojattu: merge vaatii vihreän putken ja hyväksytyn katselmoinnin.
+GitHub Actions ajaa Python- ja frontend-jobit rinnakkain jokaisessa PR:ssä ja niiden jälkeen savutestin. Päähaara on suojattu: merge vaatii vihreän putken ja hyväksytyn katselmoinnin.
 
 ## Harkitut vaihtoehdot
 

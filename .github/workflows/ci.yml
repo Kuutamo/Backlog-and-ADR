@@ -54,3 +54,26 @@ jobs:
         run: npm test
       - name: Build
         run: npm run build
+
+  smoke:
+    name: Savutesti (sovellus käynnistyy)
+    needs: [python, frontend]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Asenna riippuvuudet tyhjästä
+        run: |
+          uv sync --all-packages
+          cd frontend && npm install
+      - name: Buildaa frontend
+        run: npm run build
+        working-directory: frontend
+      - name: Käynnistä sovellus ja tarkista vastaukset
+        run: scripts/smoke-test.sh
