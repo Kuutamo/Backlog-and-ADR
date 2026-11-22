@@ -30,6 +30,12 @@ jobs:
         run: uv run lint-imports
       - name: Testit
         run: uv run pytest
+      - name: Haavoittuvuudet (pip-audit)
+        run: |
+          uv export --frozen --all-packages --no-hashes --no-emit-workspace \
+            --format requirements-txt -o "$RUNNER_TEMP/requirements.txt"
+          uvx pip-audit -r "$RUNNER_TEMP/requirements.txt" --disable-pip --no-deps \
+            --progress-spinner off
 
   frontend:
     name: Frontend
@@ -44,6 +50,8 @@ jobs:
           node-version: "22"
       - name: Asenna riippuvuudet
         run: npm ci
+      - name: Haavoittuvuudet (npm audit, high ja critical)
+        run: npm audit --audit-level=high
       - name: ESLint
         run: npm run lint
       - name: Prettier

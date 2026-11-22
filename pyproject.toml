@@ -8,7 +8,7 @@ dependencies = []
 [dependency-groups]
 dev = [
     "pytest>=8",
-    "httpx>=0.27",
+    "httpx2",
     "mypy>=1.11",
     "ruff>=0.6",
     "import-linter>=2.0",
@@ -42,6 +42,11 @@ packages = ["api", "tools"]
 [tool.pytest.ini_options]
 testpaths = ["backend/tests", "scripts/tests"]
 addopts = "-ra"
+# Vanhentumisvaroitukset kaatavat testit, jotta ne korjataan heti (T-03, ADR-006).
+filterwarnings = [
+    "error::DeprecationWarning",
+    "error::PendingDeprecationWarning",
+]
 
 # Moduulirajat (ADR-002): backlog ja adr eivät saa riippua toisistaan.
 [tool.importlinter]
