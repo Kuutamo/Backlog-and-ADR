@@ -22,10 +22,7 @@ describe("App", () => {
 
     expect(screen.getByRole("heading", { name: "Backlog ja ADR" })).toBeInTheDocument();
     expect(await screen.findByRole("heading", { name: "Backlog" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Backlog" })).toHaveAttribute(
-      "aria-current",
-      "page",
-    );
+    expect(screen.getByRole("button", { name: "Backlog" })).toHaveAttribute("aria-current", "page");
   });
 
   it("vaihtaa navigaatiosta arkkitehtuuripäätöksiin ja takaisin", async () => {

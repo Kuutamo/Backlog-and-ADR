@@ -66,4 +66,10 @@ curl -fsS -X POST "http://localhost:$WEB_PORT/api/stories" \
   -d '{"title":"Savutestin tarina"}' >/dev/null
 wait_for "http://localhost:$WEB_PORT/api/stories" "Savutestin tarina"
 
-echo "Savutesti läpi: tietokanta, backend ja frontend käynnistyvät, ja tarina tallentuu."
+echo "ADR:n tallennus frontendin kautta tietokantaan"
+curl -fsS -X POST "http://localhost:$WEB_PORT/api/adrs" \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Savutestin päätös","context":"Savutesti","decision":"Tallennetaan"}' >/dev/null
+wait_for "http://localhost:$WEB_PORT/api/adrs/1" '"identifier":"ADR-001"'
+
+echo "Savutesti läpi: tietokanta, backend ja frontend käynnistyvät, ja tarina sekä ADR tallentuvat."

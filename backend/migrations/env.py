@@ -5,7 +5,8 @@ from logging.config import fileConfig
 from alembic import context
 from sqlalchemy import create_engine
 
-import api.backlog.models  # noqa: F401  (rekisteröi mallit Base.metadataan)
+import api.adr.models  # noqa: F401  (rekisteröi mallit Base.metadataan)
+import api.backlog.models  # noqa: F401
 from api.config import get_settings
 from api.db import Base
 
