@@ -1,0 +1,19 @@
+# Paikallinen kehitystietokanta (ADR-001). Tunnukset ovat vain kehityskäyttöön.
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: backlog
+      POSTGRES_PASSWORD: backlog
+      POSTGRES_DB: backlog
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U backlog"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  db-data:

@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python:
+    name: Python (backend ja skriptit)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.12"
+      - name: Asenna riippuvuudet
+        run: uv sync --all-packages
+      - name: Ruff (lint)
+        run: uv run ruff check .
+      - name: Ruff (muotoilu)
+        run: uv run ruff format --check .
+      - name: Mypy (strict)
+        run: uv run mypy
+      - name: Moduulirajat (import-linter)
+        run: uv run lint-imports
+      - name: Testit
+        run: uv run pytest
+
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Asenna riippuvuudet
+        run: npm install
+      - name: ESLint
+        run: npm run lint
+      - name: Prettier
+        run: npm run format:check
+      - name: Tyyppitarkistus
+        run: npm run typecheck
+      - name: Testit
+        run: npm test
+      - name: Build
+        run: npm run build
