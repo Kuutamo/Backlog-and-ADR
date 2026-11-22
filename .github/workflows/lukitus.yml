@@ -1,0 +1,52 @@
+# Päivittää lukitustiedostot (uv.lock ja frontend/package-lock.json) GitHub Actionsissa
+# ja committaa ne takaisin samaan haaraan. Tarpeen, kun riippuvuuksia muutetaan
+# ympäristössä, jossa paketteja ei voi asentaa (T-03).
+#
+# Käynnistyy, kun deps/-alkuiseen haaraan pushataan riippuvuusmuutos, tai käsin
+# (Actions -> Lukitustiedostot -> Run workflow). Ei koskaan päähaarassa.
+name: Lukitustiedostot
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ["deps/**"]
+    paths:
+      - "pyproject.toml"
+      - "backend/pyproject.toml"
+      - "scripts/pyproject.toml"
+      - "frontend/package.json"
+      - ".github/workflows/lukitus.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  lock:
+    name: Päivitä lukitustiedostot
+    if: github.ref != 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+      - name: Python (uv.lock)
+        run: uv lock
+      - name: Frontend (package-lock.json)
+        run: npm install --package-lock-only --ignore-scripts
+        working-directory: frontend
+      - name: Committaa muuttuneet lukitustiedostot
+        run: |
+          if git diff --quiet -- uv.lock frontend/package-lock.json \
+            && git ls-files --error-unmatch uv.lock frontend/package-lock.json >/dev/null 2>&1; then
+            echo "Lukitustiedostot ovat ajan tasalla."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add uv.lock frontend/package-lock.json
+          git commit -m "chore: päivitä lukitustiedostot"
+          git push
