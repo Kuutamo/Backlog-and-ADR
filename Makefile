@@ -1,4 +1,4 @@
-.PHONY: install dev db api web check check-python check-frontend test
+.PHONY: install dev db api web check check-python check-frontend test smoke
 
 install: ## Asenna kaikki riippuvuudet
 	uv sync --all-packages
@@ -31,3 +31,7 @@ check-frontend:
 test: ## Aja vain testit
 	uv run pytest
 	cd frontend && npm test
+
+smoke: ## Käynnistä koko sovellus ja tarkista, että se vastaa (sama kuin CI:n savutesti)
+	cd frontend && npm run build
+	scripts/smoke-test.sh
