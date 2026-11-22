@@ -38,7 +38,7 @@ def engine(database_url: str) -> Iterator[Engine]:
 @pytest.fixture
 def session_factory(engine: Engine) -> sessionmaker[Session]:
     with engine.begin() as connection:
-        connection.execute(text("TRUNCATE TABLE stories"))
+        connection.execute(text("TRUNCATE TABLE stories, adrs"))
     return sessionmaker(bind=engine)
 
 
