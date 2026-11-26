@@ -1,0 +1,41 @@
+# Automaattiset riippuvuuspäivitykset (T-03, ADR-006).
+# Pienet päivitykset (minor ja patch) niputetaan yhteen PR:ään ekosysteemiä kohden,
+# suuret versiopäivitykset tulevat omina PR:inään.
+version: 2
+
+updates:
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      timezone: "Europe/Helsinki"
+    groups:
+      python-pienet:
+        update-types: ["minor", "patch"]
+    commit-message:
+      prefix: "deps"
+
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      timezone: "Europe/Helsinki"
+    groups:
+      npm-pienet:
+        update-types: ["minor", "patch"]
+    commit-message:
+      prefix: "deps"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      timezone: "Europe/Helsinki"
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "ci"
